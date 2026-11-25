@@ -48,9 +48,10 @@ jobs:
           python -m PyInstaller keybind.spec --noconfirm
 
       - name: Verify exe exists
+        shell: pwsh
         run: |
-          ls -la dist/keybind.exe
-          echo "Build successful: dist/keybind.exe"
+          Get-ChildItem dist/keybind.exe
+          Write-Output "Build successful: dist/keybind.exe"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
