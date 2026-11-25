@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "keybind"
+version = "0.1.0"
+description = "Configurable global hotkeys that type text or open links."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "fzenezim" }]
+dependencies = [
+    "pynput>=1.7.6",
+    "pyautogui>=0.9.54",
+    "pywinauto>=0.6.8",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+keybind = "keybind.gui:main"
+keybind-core = "keybind.core:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
