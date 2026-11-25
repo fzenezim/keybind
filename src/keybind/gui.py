@@ -1,6 +1,7 @@
 """Tkinter GUI for configuring keybind shortcuts."""
 
 import tkinter as tk
+import tkinter.messagebox as messagebox
 import threading
 import os
 
@@ -200,8 +201,24 @@ class KeybindApp:
         self._status_label.config(text="Added new shortcut", fg="green")
 
     def _on_save(self):
-        """Save config and reload engine."""
+        """Save config and reload engine, warning on combo conflicts."""
         self._collect_rows_to_config()
+        conflicts = self.config.find_combo_conflicts()
+        if conflicts:
+            lines = [
+                f"  {combo}  ->  shortcuts #{'+#'.join(str(i + 1) for i in idxs)}"
+                for combo, idxs in conflicts
+            ]
+            msg = (
+                "Duplicate key combos detected:\n\n"
+                + "\n".join(lines)
+                + "\n\n"
+                "Only the FIRST shortcut in the list will fire.\n"
+                "Continue and save anyway?"
+            )
+            if not messagebox.askokcancel("Keybind - Conflict", msg):
+                self._status_label.config(text="Save cancelled (conflict)", fg="orange")
+                return
         self.config.save()
         if self._engine:
             self._engine.reload()

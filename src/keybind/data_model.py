@@ -96,3 +96,20 @@ class Config:
 
     def get_enabled_shortcuts(self) -> list:
         return [s for s in self.shortcuts if s.enabled]
+
+    def find_combo_conflicts(self) -> list:
+        """Find shortcuts that share the same key combo (among enabled ones).
+
+        Returns a list of (combo_str, [indices]) for each conflicting combo.
+        """
+        from collections import defaultdict
+        combo_map = defaultdict(list)
+        for i, sc in enumerate(self.shortcuts):
+            if sc.enabled:
+                key = tuple(k.lower() for k in sc.combo.keys)
+                combo_map[key].append(i)
+        return [
+            ("+".join(combo), idxs)
+            for combo, idxs in combo_map.items()
+            if len(idxs) > 1
+        ]
